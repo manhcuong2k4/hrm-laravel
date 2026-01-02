@@ -39,13 +39,18 @@
     }
 
     .logo {
-      font-size: 1.5rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-decoration: none;
-    }
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    /* Xóa các thuộc tính tạo màu chữ gradient cũ đi vì không còn dùng text */
+}
+
+/* CSS cho ảnh logo */
+.logo img {
+    height: 40px; /* Điều chỉnh chiều cao cho phù hợp với header của bạn */
+    width: auto;  /* Giữ tỷ lệ ảnh */
+    object-fit: contain;
+}
 
     .nav-link {
       color: var(--text-dark);

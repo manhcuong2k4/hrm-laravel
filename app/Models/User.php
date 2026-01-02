@@ -4,7 +4,7 @@ namespace App\Models;
 
 // 1. Chỉ giữ lại Interface và Trait mới
 use Laratrust\Contracts\LaratrustUser;
-use Laratrust\Traits\HasRolesAndPermissions; 
+use Laratrust\Traits\HasRolesAndPermissions;
 
 // --- XÓA DÒNG DƯỚI NÀY ĐI (Đây là nguyên nhân gây lỗi) ---
 // use Laratrust\Traits\LaratrustUserTrait; 
@@ -21,8 +21,8 @@ class User extends Authenticatable implements LaratrustUser
     // use LaratrustUserTrait;
 
     // 2. CHỈ DÙNG DÒNG NÀY LÀ ĐỦ
-    use HasRolesAndPermissions; 
-    
+    use HasRolesAndPermissions;
+
     use HasFactory, Notifiable;
     // use HasApiTokens;
 
@@ -37,7 +37,9 @@ class User extends Authenticatable implements LaratrustUser
         'phone',
         'password',
         'avatar',
-        'role'
+        'role',
+        'phongban_id',
+        'bophan_id',
     ];
 
     /**
@@ -59,4 +61,44 @@ class User extends Authenticatable implements LaratrustUser
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function phongBan()
+    {
+        return $this->belongsTo(PhongBan::class, 'phongban_id');
+    }
+
+    public function boPhan()
+    {
+        return $this->belongsTo(BoPhan::class, 'bophan_id');
+    }
+
+    public function featureGroups()
+    {
+        return $this->belongsToMany(FeatureGroup::class, 'feature_group_user');
+    }
+    public function nhanSu()
+    {
+        // tham số thứ 2 là khóa ngoại (email bên bảng nhan_sus)
+        // tham số thứ 3 là khóa nội (email bên bảng users)
+        return $this->hasOne(\App\Models\NhanSu::class, 'email', 'email');
+    }
+
+    
+
+    // 2. HÀM QUAN TRỌNG: Kiểm tra quyền thông qua nhóm
+    public function hasPermissionViaGroup($permissionName)
+    {
+        // Lấy tất cả các nhóm mà user này tham gia
+        // Eager load 'permissions' để tránh truy vấn N+1
+        $groups = $this->featureGroups()->with('permissions')->get();
+
+        foreach ($groups as $group) {
+            // Nếu nhóm này chứa quyền đang cần tìm
+            if ($group->permissions->contains('name', $permissionName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

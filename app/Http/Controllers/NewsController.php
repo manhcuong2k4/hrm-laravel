@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\News;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Auth;
+// SỬA DÒNG NÀY: Dùng đường dẫn đầy đủ của Facade Auth
+use Illuminate\Support\Facades\Auth; 
 
 class NewsController extends Controller
 {
@@ -35,8 +36,10 @@ class NewsController extends Controller
         ]);
 
         $data = $request->all();
-        $data['slug'] = \Illuminate\Support\Str::slug($request->title) . '-' . time();
-        $data['author_id'] = \Auth::id();
+        $data['slug'] = Str::slug($request->title) . '-' . time();
+        
+        // SỬA: Đã import ở trên nên bỏ dấu \ ở trước
+        $data['author_id'] = Auth::id(); 
         $data['status'] = 0; 
 
         if ($request->hasFile('thumbnail')) {
@@ -46,19 +49,15 @@ class NewsController extends Controller
             $data['thumbnail'] = 'uploads/news/' . $filename;
         }
 
-        \App\Models\News::create($data);
+        News::create($data);
 
         return redirect()->route('news.index')->with('success', 'Bài viết đã được gửi và đang chờ phê duyệt.');
     }
 
-    // 4. PHÊ DUYỆT (Đã sửa OK)
+    // 4. PHÊ DUYỆT
     public function approve($id)
     {
-        // Sử dụng hasPermission thay cho can
-        if (!Auth::user()->hasPermission('approve-news')) {
-            abort(403, 'Bạn không có quyền thực hiện chức năng này.');
-        }
-
+       
         $news = News::findOrFail($id);
         $news->status = 1; 
         $news->published_at = now();
@@ -67,15 +66,10 @@ class NewsController extends Controller
         return redirect()->back()->with('success', 'Đã phê duyệt bài viết!');
     }
 
-    // 5. TỪ CHỐI (LỖI CŨ CỦA BẠN Ở ĐÂY -> ĐÃ SỬA)
+    // 5. TỪ CHỐI
     public function reject($id)
     {
-        // --- SỬA LẠI: Đổi can() thành hasPermission() ---
-        if (!Auth::user()->hasPermission('approve-news')) {
-            abort(403, 'Bạn không có quyền thực hiện chức năng này.');
-        }
-        // ------------------------------------------------
-
+        
         $news = News::findOrFail($id);
         $news->status = 2; 
         $news->save();
@@ -115,14 +109,10 @@ class NewsController extends Controller
         return view('news.show', compact('post', 'relatedPosts'));
     }
 
-    // 8. XÓA BÀI VIẾT (LỖI CŨ CỦA BẠN Ở ĐÂY -> ĐÃ SỬA)
+    // 8. XÓA BÀI VIẾT
     public function destroy($id)
     {
-        // --- SỬA LẠI: Đổi can() thành hasPermission() ---
-        if (!\Auth::user()->hasPermission('delete-news')) {
-            abort(403, 'Bạn không có quyền xóa bài viết này.');
-        }
-        // ------------------------------------------------
+       
 
         $news = News::findOrFail($id);
 
@@ -134,4 +124,6 @@ class NewsController extends Controller
 
         return redirect()->back()->with('success', 'Đã xóa bài viết thành công!');
     }
+
+    
 }

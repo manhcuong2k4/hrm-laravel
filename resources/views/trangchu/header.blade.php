@@ -2,13 +2,15 @@
 <header class="header" id="header">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
-            <a href="/" class="logo">DataTech</a>
+            {{-- <a href="/" class="logo">DataTech</a> --}}
+            <a href="/" class="logo">
+    {{-- Thay 'images/logo.png' bằng đường dẫn thực tế của bạn trong thư mục public --}}
+    <img src="{{ asset('images/Datatech.png') }}" alt="DataTech Logo">
+</a>
             <nav class="d-none d-lg-flex align-items-center gap-4">
                 <a href="#hero" class="nav-link">Trang chủ</a>
                 <a href="{{ route('news.public') }}" class="nav-link">Tin Tức</a>
-                <a href="#features" class="nav-link">Tính năng</a>
-                <a href="#testimonials" class="nav-link">Đánh giá</a>
-                <a href="#contact" class="nav-link">Liên hệ</a>
+                <a href="{{ route('company.show') }}" class="nav-link">Thông tin</a>
                 
                 @if(Auth::check())
                     {{-- Gọi button Dashboard --}}

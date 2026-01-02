@@ -1,101 +1,183 @@
-<!-- BEGIN SIDEBAR -->
 <div class="page-sidebar-wrapper">
-    <!-- BEGIN SIDEBAR -->
-    <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-    <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
     <div class="page-sidebar navbar-collapse collapse">
-        <!-- BEGIN SIDEBAR MENU -->
-        <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
-        <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
-        <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
-        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-        <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
-        <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-        <ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" style="padding-top: 20px">
-            <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
-            <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+        <ul class="page-sidebar-menu page-header-fixed" data-keep-expanded="false" data-auto-scroll="true"
+            data-slide-speed="200" style="padding-top: 20px">
+
             <li class="sidebar-toggler-wrapper hide">
-                <div class="sidebar-toggler">
-                    <span></span>
-                </div>
+                <div class="sidebar-toggler"><span></span></div>
             </li>
-            <!-- END SIDEBAR TOGGLER BUTTON -->
-            <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-            @permission('read-dashboard')
-            <li class="nav-item start {{ Route::currentRouteName() == 'dashboard' ? 'active open' : '' }}">
-                <a href="{{ route('dashboard') }}" class="nav-link">
-                    <i class="fa fa-dashboard"></i>
-                    <span class="title">Bảng điều khiển</span>
-                    <span class="selected"></span>
-                </a>
-            </li>
-            @endpermission
-            @permission('read-nhan-su')
+
+            {{-- Tất cả đều dùng @can. AuthServiceProvider sẽ tự kiểm tra Nhóm hoặc Role --}}
+            @can('read-dashboard')
+                <li class="nav-item start {{ Route::currentRouteName() == 'dashboard' ? 'active open' : '' }}">
+                    <a href="{{ route('dashboard') }}" class="nav-link">
+                        <i class="fa fa-dashboard"></i>
+                        <span class="title">Bảng điều khiển</span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+            @endcan
+
             <li class="heading">
-                <h3 class="uppercase">Chức năng ứng dụng</h3>
+                <h3 class="uppercase">Quản trị hệ thống</h3>
             </li>
-            <li class="nav-item {{ Route::getCurrentRoute()->getPrefix() == '/staffs' ? 'active open' : '' }}"">
-                <a href="{{ route('nhan_su.index') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-users"></i>
-                    <span class="title">Quản trị nhân sự</span>
-                    <span class="selected"></span>
-                </a>
-            </li>
-            @endpermission
-            @permission('read-news')
-            <li class="nav-item {{ Route::getCurrentRoute()->getPrefix() == '/news' ? 'active open' : '' }}">
-    <a href="{{ route('news.index') }}" class="nav-link nav-toggle">
-        <i class="fa fa-newspaper-o"></i>
-        <span class="title">Quản trị tin tức</span>
-        <span class="selected"></span>
-    </a>
-</li>
-@endpermission
-            @permission('update-file-manager')
+
+            @can('read-users')
+                <li class="nav-item {{ Route::currentRouteName() == 'user.index' ? 'active open' : '' }}">
+                    <a href="{{ route('user.index') }}" class="nav-link nav-toggle">
+                        <i class="fa fa-users"></i>
+                        <span class="title">Danh sách người dùng</span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+            @endcan
+
+            @can('create-users')
+                <li class="nav-item {{ Route::currentRouteName() == 'user.add.get' ? 'active open' : '' }}">
+                    <a href="{{ route('user.add.get') }}" class="nav-link nav-toggle">
+                        <i class="fa fa-user-plus"></i>
+                        <span class="title">Thêm người dùng</span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+            @endcan
+
+            @can('update-password')
+                <li class="nav-item {{ Route::currentRouteName() == 'password.change' ? 'active open' : '' }}">
+                    <a href="{{ route('password.change') }}" class="nav-link nav-toggle">
+                        <i class="fa fa-key"></i>
+                        <span class="title">Đổi mật khẩu</span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+            @endcan
+
+            @can('read-profile')
+                <li class="nav-item {{ Route::currentRouteName() == 'profile.index' ? 'active open' : '' }}">
+                    <a href="{{ route('profile.index') }}" class="nav-link nav-toggle">
+                        <i class="fa fa-user"></i>
+                        <span class="title">Hồ sơ cá nhân</span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+            @endcan
+
+            @can('update-profile')
+                <li class="nav-item {{ Route::currentRouteName() == 'profile.edit' ? 'active open' : '' }}">
+                    <a href="{{ route('profile.edit') }}" class="nav-link nav-toggle">
+                        <i class="fa fa-user"></i>
+                        <span class="title">Chỉnh sửa thông tin </span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+            @endcan
+
+            @can('read-acl')
+                <li class="nav-item {{ Request::is('roles*') ? 'active open' : '' }}">
+                    <a href="{{ route('role.index') }}" class="nav-link nav-toggle">
+                        <i class="fa fa-shield"></i>
+                        <span class="title">Phân quyền vai trò</span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+            @endcan
+
+
+            @can('manage-feature-group')
+                <li class="nav-item {{ Request::is('groupPermissions*') ? 'active open' : '' }}">
+                    <a href="{{ route('feature-group.index') }}" class="nav-link nav-toggle">
+                        <i class="fa fa-object-group"></i>
+                        <span class="title">Phân quyền nhóm </span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+            @endcan
+
+            {{-- 2. MODULE PHÂN QUYỀN CHI TIẾT --}}
+            {{-- Kiểm tra quyền: manage-user-feature --}}
+            @can('manage-user-feature')
+                <li class="nav-item {{ Request::is('userPermissions*') ? 'active open' : '' }}">
+                    <a href="{{ route('user-feature-group.index') }}" class="nav-link nav-toggle">
+                        <i class="fa fa-user-plus"></i>
+                        <span class="title">Phân quyền chi tiết</span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+            @endcan
+
+
+            @can('read-nhan-su')
+                <li class="nav-item {{ Request::is('staffs*') ? 'active open' : '' }}">
+                    <a href="{{ route('nhan_su.index') }}" class="nav-link nav-toggle">
+                        <i class="fa fa-user-md"></i>
+                        <span class="title">Danh sách nhân sự</span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+            @endcan
+
             <li class="heading">
-                <h3 class="uppercase">Quản trị nâng cao</h3>
+                <h3 class="uppercase">Quản lý tin tức</h3>
             </li>
-            <li class="nav-item {{ Route::getCurrentRoute()->getPrefix() == '/file-manager' ? 'active open' : '' }}">
-                <a href="{{ route('file-manager.index') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-folder-open"></i>
-                    <span class="title">Tập tin & hình ảnh</span>
-                    <span class="selected"></span>
-                </a>
-            </li>
-            @endpermission
-            @permission('read-users')
-            <li class="nav-item {{ Route::getCurrentRoute()->getPrefix() == '/users' ? 'active open' : '' }}">
-                <a href="{{ route('user.index') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-user"></i>
-                    <span class="title">Người dùng ứng dụng</span>
-                    <span class="selected"></span>
-                </a>
-            </li>
-            @endpermission
-            @permission('read-acl')
-            <li class="nav-item {{ Route::getCurrentRoute()->getPrefix() == '/roles' ? 'active open' : '' }}">
-                <a href="{{ route('role.index') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-user-secret"></i>
-                    <span class="title">Nhóm & phân quyền</span>
-                    <span class="selected"></span>
-                </a>
-            </li>
-            @endpermission
-            @permission('update-company')
-            <li class="heading">
-                <h3 class="uppercase">Cấu Hình</h3>
-            </li>
-            <li class="nav-item {{ Route::getCurrentRoute()->getPrefix() == '/company' ? 'active open' : '' }}">
-                <a href="{{ route('company.index') }}" class="nav-link nav-toggle">
-                    <i class="fa fa-building"></i>
-                    <span class="title">Cấu hình công Ty</span>
-                    <span class="selected"></span>
-                </a>
-            </li>
-            @endpermission
+
+            @can('read-news')
+                <li class="nav-item {{ Route::currentRouteName() == 'news.index' ? 'active open' : '' }}">
+                    <a href="{{ route('news.index') }}" class="nav-link nav-toggle">
+                        <i class="fa fa-list-alt"></i>
+                        <span class="title">Danh sách tin tức</span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+            @endcan
+
+
+
+            @can('create-news')
+                <li class="nav-item {{ Route::currentRouteName() == 'news.create' ? 'active open' : '' }}">
+                    <a href="{{ route('news.create') }}" class="nav-link nav-toggle">
+                        <i class="fa fa-pencil-square-o"></i>
+                        <span class="title">Thêm mới tin tức</span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+            @endcan
+
+            @can('update-file-manager')
+                <li class="nav-item {{ Request::is('file-manager*') ? 'active open' : '' }}">
+                    <a href="{{ route('file-manager.index') }}" class="nav-link nav-toggle">
+                        <i class="fa fa-folder-open"></i>
+                        <span class="title">Quản lý tập tin</span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+            @endcan
+            @can('read-dashboard') {{-- Hoặc dùng quyền cơ bản nào đó --}}
+    <li class="nav-item {{ Route::currentRouteName() == 'company.show' ? 'active open' : '' }}">
+        <a href="{{ route('company.show') }}" class="nav-link nav-toggle">
+            <i class="fa fa-info-circle"></i>
+            <span class="title">Thông tin công ty</span>
+        </a>
+    </li>
+@endcan
+
+            @can('update-company')
+                <li class="nav-item {{ Route::currentRouteName() == 'company.index' ? 'active open' : '' }}">
+                    <a href="{{ route('company.index') }}" class="nav-link nav-toggle">
+                        <i class="fa fa-building"></i>
+                        <span class="title">Cấu hình công ty</span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+            @endcan
+            @can('read-dashboard')
+                <li class="nav-item {{ Route::currentRouteName() == 'login-history.index' ? 'active open' : '' }}">
+                    <a href="{{ route('login-history.index') }}" class="nav-link nav-toggle">
+                        <i class="fa fa-history"></i>
+                        <span class="title">Nhật ký hoạt động</span>
+                        <span class="selected"></span>
+                    </a>
+                </li>
+            @endcan
         </ul>
-        <!-- END SIDEBAR MENU -->
     </div>
-    <!-- END SIDEBAR -->
 </div>
-<!-- END SIDEBAR -->

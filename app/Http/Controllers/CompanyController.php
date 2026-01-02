@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
 {
-    public function init(){
+    public function init()
+    {
         // \Setting::set('company.name', 'Công ty TNHH Thịnh Phong');
         // \Setting::set('company.address', '923 Lê Hồng Phong, Phước Long, Nha Trang, Khánh Hòa');
         // \Setting::set('company.phone', '0258 3881168');
@@ -29,12 +30,20 @@ class CompanyController extends Controller
         // }
     }
 
-    public function index(){
-        
+    public function index()
+    {
+
         return view('company.index');
     }
 
-    public function update(Request $request){
+    public function show()
+    {
+        // Vì bạn dùng helper setting() toàn cục nên không cần truyền biến
+        return view('company.show');
+    }
+
+    public function update(Request $request)
+    {
 
         \Setting::set('company.name', $request->input('name'));
         \Setting::set('company.address', $request->input('address'));
@@ -46,19 +55,18 @@ class CompanyController extends Controller
         \Setting::set('company.quoc_tich', $request->input('quoc_tich'));
 
         // Handle the user upload of avatar
-    	if($request->hasFile('logo')){
-    		$logo = $request->file('logo');
-    		$filename = time() .'-logo.'. $logo->getClientOriginalExtension();
-            Image::make($logo)->save( public_path('/uploads/logos/' . $filename ) );
+        if ($request->hasFile('logo')) {
+            $logo = $request->file('logo');
+            $filename = time() . '-logo.' . $logo->getClientOriginalExtension();
+            Image::make($logo)->save(public_path('/uploads/logos/' . $filename));
             \Setting::set('company.logo', $filename);
         }
 
-        try{
+        try {
             \Setting::save();
-            Log::info('Người dùng ID:'.Auth::user()->id.' đã cập nhật thông tin công ty');
+            Log::info('Người dùng ID:' . Auth::user()->id . ' đã cập nhật thông tin công ty');
             return redirect()->route('company.index')->with('status_success', 'Cập nhật thông tin công ty thành công!');
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             Log::error($e);
             return redirect()->route('company.index')->with('status_error', 'Xảy ra lỗi khi cập nhật thông tin công ty!');
         }
