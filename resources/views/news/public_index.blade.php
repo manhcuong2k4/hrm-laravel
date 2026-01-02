@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link href="{{ asset('css/trangchu/trangchu.css') }}" rel="stylesheet">
     <link href="{{ asset('css/news/public_index.css') }}" rel="stylesheet">
-   
+
 </head>
 
 <body>
@@ -71,12 +71,9 @@
                     </div>
                     <div class="col-lg-6">
                         <div class="text-lg-end">
-                            <a href="{{ route('news.public') }}"
-                                class="filter-btn {{ !request('type') ? 'active' : '' }}">Tất cả</a>
-                            <a href="{{ route('news.public', ['type' => 'tech']) }}"
-                                class="filter-btn {{ request('type') == 'tech' ? 'active' : '' }}">Công nghệ</a>
-                            <a href="{{ route('news.public', ['type' => 'event']) }}"
-                                class="filter-btn {{ request('type') == 'event' ? 'active' : '' }}">Sự kiện</a>
+                            <a href="{{ route('news.public') }}" class="filter-btn ">Tất cả</a>
+                            <a href="{{ route('news.public') }}" class="filter-btn ">Công nghệ</a>
+                            <a href="{{ route('news.public') }}" class="filter-btn ">Sự kiện</a>
                         </div>
                     </div>
                 </div>
@@ -93,7 +90,7 @@
             <div class="container">
                 <div class="featured-card"
                     onclick="window.location.href='{{ route('news.show', ['id' => $featured->id, 'slug' => $featured->slug]) }}'">
-                    <img src="{{ $featured->thumbnail ? asset($featured->thumbnail) : 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200' }}"
+                    <img src="{{ $featured->thumbnail ? asset($featured->thumbnail) : '' }}"
                         alt="{{ $featured->title }}">
                     <div class="featured-overlay">
                         <span class="featured-category">Mới nhất</span>
@@ -126,7 +123,7 @@
                             <div class="news-card"
                                 onclick="window.location.href='{{ route('news.show', ['id' => $item->id, 'slug' => $item->slug]) }}'">
                                 <div class="news-image">
-                                    <img src="{{ $item->thumbnail ? asset($item->thumbnail) : 'https://via.placeholder.com/600x400' }}"
+                                    <img src="{{ $item->thumbnail ? asset($item->thumbnail) : '' }}"
                                         alt="{{ $item->title }}">
                                     <span class="news-category">Tin tức</span>
                                 </div>
@@ -182,42 +179,8 @@
     <a href="#" class="scroll-top" id="scrollTop">
         <i class="bi bi-arrow-up-short"></i>
     </a>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Header scroll effect
-        window.addEventListener('scroll', function() {
-            const header = document.getElementById('header');
-            const scrollTop = document.getElementById('scrollTop');
-            if (window.scrollY > 100) {
-                header.classList.add('scrolled');
-                scrollTop.classList.add('active');
-            } else {
-                header.classList.remove('scrolled');
-                scrollTop.classList.remove('active');
-            }
-        });
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        function subscribeNewsletter(e) {
-            e.preventDefault();
-            alert('Cảm ơn bạn đã đăng ký!');
-            e.target.reset();
-        }
-    </script>
+    <script src="{{ asset('js/news/index.js') }}"></script>
 </body>
 
 </html>

@@ -4,100 +4,132 @@
 
 @section('content')
 <div class="page-content-wrapper">
-    <div class="page-content">
-        <div class="portlet light bordered">
-            <div class="portlet-title">
-                <div class="caption font-green-haze">
-                    <i class="fa fa-clock-o font-green-haze"></i>
-                    <span class="caption-subject bold uppercase"> Lịch sử Đăng nhập / Đăng xuất</span>
-                </div>
-            </div>
-            <div class="portlet-body">
-                
-                {{-- --- KHỐI TÌM KIẾM NÂNG CAO --- --}}
-                <div class="row" style="margin-bottom: 15px;">
-                    <div class="col-md-12">
-                        <form action="{{ route('login-history.index') }}" method="GET" class="form-inline">
-                            
-                            <div class="form-group" style="margin-right: 10px;">
-                                <input type="text" name="keyword" class="form-control" 
-                                       placeholder="Tên hoặc email..." 
-                                       value="{{ request('keyword') }}">
+    <div class="page-content" style="background-color: #f4f6f9;">
+            <link rel="stylesheet" href="{{ asset('css/login_history/index.css') }}">
+
+            <div class="history-wrapper">
+                <div class="history-card">
+                    <div class="history-header">
+                        <h2>
+                            <i class="fa fa-history"></i>
+                            Nhật ký hoạt động
+                        </h2>
+                    </div>
+
+                    <div class="search-section">
+                        <form action="{{ route('login-history.index') }}" method="GET">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group-modern">
+                                        <label><i class="fa fa-search"></i> Từ khóa</label>
+                                        <input type="text" name="keyword" class="form-control-modern"
+                                            placeholder="Tên, email..." value="{{ request('keyword') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group-modern">
+                                        <label><i class="fa fa-calendar"></i> Từ ngày</label>
+                                        <input type="date" name="date_from" class="form-control-modern"
+                                            value="{{ request('date_from') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group-modern">
+                                        <label><i class="fa fa-calendar"></i> Đến ngày</label>
+                                        <input type="date" name="date_to" class="form-control-modern"
+                                            value="{{ request('date_to') }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-2" style="display: flex; gap: 5px;">
+                                    <button class="btn-modern btn-search" type="submit">
+                                        Tìm
+                                    </button>
+                                    @if (request('keyword') || request('date_from') || request('date_to'))
+                                        <a href="{{ route('login-history.index') }}" class="btn-modern btn-reset"
+                                            title="Làm mới">
+                                            <i class="fa fa-refresh"></i>
+                                        </a>
+                                    @endif
+                                </div>
                             </div>
-
-                            <div class="form-group" style="margin-right: 5px;">
-                                <label>Từ:</label>
-                                <input type="date" name="date_from" class="form-control" 
-                                       value="{{ request('date_from') }}">
-                            </div>
-
-                            <div class="form-group" style="margin-right: 10px;">
-                                <label>Đến:</label>
-                                <input type="date" name="date_to" class="form-control" 
-                                       value="{{ request('date_to') }}">
-                            </div>
-
-                            <button class="btn btn-primary" type="submit">
-                                <i class="fa fa-search"></i> Tìm kiếm
-                            </button>
-                            
-                            @if(request('keyword') || request('date_from') || request('date_to'))
-                                <a href="{{ route('login-history.index') }}" class="btn btn-default" title="Bỏ lọc">
-                                    <i class="fa fa-refresh"></i> Làm mới
-                                </a>
-                            @endif
-
                         </form>
                     </div>
-                </div>
-                {{-- ------------------------------- --}}
 
-                <div class="table-scrollable">
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th> Thời gian </th>
-                                <th> Tài khoản </th>
-                                <th> Hành động </th>
-                                <th> IP Address </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if($histories->count() > 0)
-                                @foreach($histories as $history)
-                                <tr>
-                                    <td> {{ $history->created_at->format('d/m/Y H:i:s') }} </td>
-                                    <td> 
-                                        @if($history->user)
-                                            <span class="bold">{{ $history->user->name }}</span> <br>
-                                            <small>{{ $history->user->email }}</small>
-                                        @else
-                                            <span class="text-muted">User đã xóa</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($history->action == 'login')
-                                            <span class="label label-success"> Đăng nhập </span>
-                                        @else
-                                            <span class="label label-warning"> Đăng xuất </span>
-                                        @endif
-                                    </td>
-                                    <td> {{ $history->ip_address }} </td>
-                                </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="4" class="text-center">Không tìm thấy dữ liệu phù hợp.</td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
-                <div class="text-right">
-                    {{ $histories->links() }}
+                    <div class="table-container">
+                        <div class="table-responsive">
+                            <table class="table-modern">
+                                <thead>
+                                    <tr>
+                                        <th>Thời gian</th>
+                                        <th>Tài khoản</th>
+                                        <th>Hành động</th>
+                                        <th>IP Address</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if ($histories->count() > 0)
+                                        @foreach ($histories as $history)
+                                            <tr>
+                                                <td>
+                                                    <span style="font-weight: 600; color: #555;">
+                                                        {{ $history->created_at->format('H:i:s') }}
+                                                    </span>
+                                                    <br>
+                                                    <small
+                                                        style="color: #999;">{{ $history->created_at->format('d/m/Y') }}</small>
+                                                </td>
+                                                <td>
+                                                    @if ($history->user)
+                                                        <div class="user-info">
+                                                            <div class="user-avatar">
+                                                                {{ strtoupper(substr($history->user->name, 0, 1)) }}
+                                                            </div>
+                                                            <div class="user-details">
+                                                                <span class="user-name">{{ $history->user->name }}</span>
+                                                                <span class="user-email">{{ $history->user->email }}</span>
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <span class="text-muted">User đã xóa</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($history->action == 'login')
+                                                        <span class="action-badge badge-login">
+                                                            <i class="fa fa-sign-in"></i> Đăng nhập
+                                                        </span>
+                                                    @else
+                                                        <span class="action-badge badge-logout">
+                                                            <i class="fa fa-sign-out"></i> Đăng xuất
+                                                        </span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <span class="ip-address">
+                                                        {{ $history->ip_address }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="4" class="text-center" style="padding: 50px;">
+                                                <i class="fa fa-inbox" style="font-size: 40px; color: #ddd;"></i>
+                                                <p style="margin-top: 10px; color: #999;">Không tìm thấy dữ liệu phù hợp</p>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="pagination-container">
+                        {{ $histories->links() }}
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
-</div>
 @endsection

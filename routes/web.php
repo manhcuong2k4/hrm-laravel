@@ -152,13 +152,24 @@ Route::group(['middleware' => ['auth', 'only_active_user']], function () {
 
     // 8. NEWS
     Route::group(['prefix' => 'admin/news', 'as' => 'news.'], function () {
-        Route::get('/', [NewsController::class, 'index'])->name('index')->middleware('can:read-news');
-        Route::get('/create', [NewsController::class, 'create'])->name('create')->middleware('can:create-news');
-        Route::post('/store', [NewsController::class, 'store'])->name('store')->middleware('can:create-news');
-        Route::get('/approve/{id}', [NewsController::class, 'approve'])->name('approve')->middleware('can:approve-news');
-        Route::get('/reject/{id}', [NewsController::class, 'reject'])->name('reject')->middleware('can:approve-news');
-        Route::get('/delete/{id}', [NewsController::class, 'destroy'])->name('destroy')->middleware('can:delete-news');
-    });
+    Route::get('/', [NewsController::class, 'index'])->name('index')->middleware('can:read-news');
+    
+    // Tạo mới
+    Route::get('/create', [NewsController::class, 'create'])->name('create')->middleware('can:create-news');
+    Route::post('/store', [NewsController::class, 'store'])->name('store')->middleware('can:create-news');
+    
+    // --- THÊM 2 DÒNG NÀY ---
+    // Hiển thị form sửa
+    Route::get('/edit/{id}', [NewsController::class, 'edit'])->name('edit')->middleware('can:edit-news');
+    // Xử lý cập nhật dữ liệu
+    Route::post('/update/{id}', [NewsController::class, 'update'])->name('update')->middleware('can:edit-news');
+    // -----------------------
+
+    // Duyệt / Từ chối / Xóa
+    Route::get('/approve/{id}', [NewsController::class, 'approve'])->name('approve')->middleware('can:approve-news');
+    Route::get('/reject/{id}', [NewsController::class, 'reject'])->name('reject')->middleware('can:approve-news');
+    Route::get('/delete/{id}', [NewsController::class, 'destroy'])->name('destroy')->middleware('can:delete-news');
+});
 
     Route::get('/activity-log', [
     'middleware' => ['can:read-dashboard'], // Ai vào được dashboard thì xem được, hoặc dùng quyền riêng

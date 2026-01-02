@@ -151,14 +151,6 @@
                     </a>
                 </li>
             @endcan
-            @can('read-dashboard') {{-- Hoặc dùng quyền cơ bản nào đó --}}
-    <li class="nav-item {{ Route::currentRouteName() == 'company.show' ? 'active open' : '' }}">
-        <a href="{{ route('company.show') }}" class="nav-link nav-toggle">
-            <i class="fa fa-info-circle"></i>
-            <span class="title">Thông tin công ty</span>
-        </a>
-    </li>
-@endcan
 
             @can('update-company')
                 <li class="nav-item {{ Route::currentRouteName() == 'company.index' ? 'active open' : '' }}">
@@ -169,7 +161,7 @@
                     </a>
                 </li>
             @endcan
-            @can('read-dashboard')
+            @can('login_history')
                 <li class="nav-item {{ Route::currentRouteName() == 'login-history.index' ? 'active open' : '' }}">
                     <a href="{{ route('login-history.index') }}" class="nav-link nav-toggle">
                         <i class="fa fa-history"></i>

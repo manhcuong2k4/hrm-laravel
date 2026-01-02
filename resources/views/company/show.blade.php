@@ -10,6 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link href="{{ asset('css/info/info.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/trangchu/trangchu.css') }}" rel="stylesheet">
     
 </head>
 
@@ -213,11 +214,8 @@
         </a>
     </div>
 
-    <footer class="bg-white py-4 mt-auto border-top">
-        <div class="container text-center text-muted small">
-            &copy; {{ date('Y') }} <strong>{{ setting('company.name') }}</strong>. All Rights Reserved.
-        </div>
-    </footer>
+    <!-- Footer -->
+  @include('trangchu.footer')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
