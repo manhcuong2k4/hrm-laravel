@@ -148,6 +148,7 @@ Route::group(['middleware' => ['auth', 'only_active_user']], function () {
         Route::get('/show/{id}', ['middleware' => ['can:read-acl'], 'uses' => 'RoleController@show', 'as' => 'role.show']);
         Route::get('/edit/{id}', ['middleware' => ['can:update-acl'], 'uses' => 'RoleController@edit', 'as' => 'role.edit']);
         Route::post('/edit/{id}', ['middleware' => ['can:update-acl'], 'uses' => 'RoleController@update', 'as' => 'role.update']);
+        
     });
 
     // 8. NEWS
@@ -158,7 +159,6 @@ Route::group(['middleware' => ['auth', 'only_active_user']], function () {
     Route::get('/create', [NewsController::class, 'create'])->name('create')->middleware('can:create-news');
     Route::post('/store', [NewsController::class, 'store'])->name('store')->middleware('can:create-news');
     
-    // --- THÊM 2 DÒNG NÀY ---
     // Hiển thị form sửa
     Route::get('/edit/{id}', [NewsController::class, 'edit'])->name('edit')->middleware('can:edit-news');
     // Xử lý cập nhật dữ liệu
@@ -166,8 +166,8 @@ Route::group(['middleware' => ['auth', 'only_active_user']], function () {
     // -----------------------
 
     // Duyệt / Từ chối / Xóa
-    Route::get('/approve/{id}', [NewsController::class, 'approve'])->name('approve')->middleware('can:approve-news');
-    Route::get('/reject/{id}', [NewsController::class, 'reject'])->name('reject')->middleware('can:approve-news');
+    // Route::get('/approve/{id}', [NewsController::class, 'approve'])->name('approve')->middleware('can:approve-news');
+    // Route::get('/reject/{id}', [NewsController::class, 'reject'])->name('reject')->middleware('can:approve-news');
     Route::get('/delete/{id}', [NewsController::class, 'destroy'])->name('destroy')->middleware('can:delete-news');
 });
 

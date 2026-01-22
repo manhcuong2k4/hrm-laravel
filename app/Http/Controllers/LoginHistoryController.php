@@ -35,7 +35,7 @@ class LoginHistoryController extends Controller
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
-        // 3. Lấy dữ liệu và phân trang (giữ lại tham số tìm kiếm khi sang trang 2, 3...)
+        // 3. Lấy dữ liệu và phân trang 
         $histories = $query->latest()->paginate(10)->appends(['keyword' => $request->keyword,'date_from' => $request->date_from,
                 'date_to' => $request->date_to]);
         

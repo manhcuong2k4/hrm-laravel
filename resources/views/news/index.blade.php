@@ -62,10 +62,10 @@
                                             <th style="width: 120px;">Tác giả</th>
                                             <th style="width: 100px;">Ngày tạo</th>
                                             <th style="width: 80px; text-align: center;">Xem bài</th>
-                                            <th style="width: 100px; text-align: center;">Trạng thái</th>
 
-                                            @permission('approve-news')
-                                                <th style="width: 120px; text-align: center;">Hành động</th>
+                                            {{-- @permission('approve-news') --}}
+                                             @permission('edit-news|delete-news')
+                                                <th style="width: 120px; text-align: center;">Trạng thái</th>
                                             @endpermission
                                         </tr>
                                     </thead>
@@ -103,15 +103,13 @@
                                                     @endif
                                                 </td>
 
-                                                <td align="center" style="vertical-align: middle;">
-                                                    {!! $item->status_label !!}
-                                                </td>
 
-                                                @permission('approve-news')
+                                                {{-- @permission('approve-news') --}}
+                                                @permission('edit-news|delete-news')
                                                     <td align="center" style="vertical-align: middle;">
 
                                                         {{-- 1. Nút Duyệt / Từ chối (Giữ nguyên) --}}
-                                                        @if ($item->status == 0)
+                                                        {{-- @if ($item->status == 0)
                                                             <a href="{{ route('news.approve', $item->id) }}"
                                                                 class="btn btn-xs btn-success" title="Phê duyệt">
                                                                 <i class="fa fa-check"></i>
@@ -121,14 +119,13 @@
                                                                 onclick="return confirm('Bạn chắc chắn muốn từ chối?')">
                                                                 <i class="fa fa-times"></i>
                                                             </a>
-                                                        @endif
+                                                        @endif --}}
                                                         @permission('edit-news')
-                                                        <a href="{{ route('news.edit', $item->id) }}"
-                                                            class="btn btn-xs btn-info" title="Sửa bài viết">
-                                                            <i class="fa fa-pencil"></i>
-                                                        </a>
+                                                            <a href="{{ route('news.edit', $item->id) }}"
+                                                                class="btn btn-xs btn-info" title="Sửa bài viết">
+                                                                <i class="fa fa-pencil"></i>
+                                                            </a>
                                                         @endpermission
-                                                        {{-- ======================================================= --}}
 
                                                         {{-- 3. Nút Xóa (Giữ nguyên) --}}
                                                         @permission('delete-news')
@@ -138,7 +135,6 @@
                                                                 <i class="fa fa-trash"></i>
                                                             </a>
                                                         @endpermission
-
                                                     </td>
                                                 @endpermission
 

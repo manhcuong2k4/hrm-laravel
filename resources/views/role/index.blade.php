@@ -21,7 +21,7 @@
                     <i class="fa fa-circle"></i>
                 </li>
                 <li>
-                    <span>Nhóm & Phân Quyền</span>
+                    <span>Phân quyền vai trò</span>
                 </li>
             </ul>
         </div>

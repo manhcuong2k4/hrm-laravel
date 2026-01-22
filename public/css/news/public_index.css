@@ -1,6 +1,6 @@
 /* Giữ nguyên toàn bộ CSS cũ của bạn */
 :root {
-    --primary-color: #2563eb;
+    /* --primary-color: #2563eb; */
     --secondary-color: #0ea5e9;
     --accent-color: #8b5cf6;
     --dark-bg: #0f172a;
@@ -22,23 +22,6 @@ body {
     background: var(--light-bg);
 }
 
-/* Header Styles */
-.header {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    padding: 1rem 0;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
-}
-
-.header.scrolled {
-    padding: 0.5rem 0;
-    box-shadow: 0 2px 30px rgba(0, 0, 0, 0.1);
-}
 
 /* CSS cho thẻ a bao quanh (container) */
 .logo {

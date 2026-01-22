@@ -24,24 +24,30 @@ class NewsController extends Controller
     }
 
     // 3. Lưu bài viết
-    public function store(Request $request)
+   public function store(Request $request)
     {
+        // 1. Validate dữ liệu
         $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
             'thumbnail' => 'nullable|mimes:jpeg,png,jpg,gif,webp,jfif|max:10240'
         ], [
+            'title.required' => 'Trường này là bắt buộc',
+            'content.required' => 'Vui lòng nhập nội dung',
             'thumbnail.mimes' => 'Chỉ chấp nhận ảnh đuôi: jpeg, png, jpg, gif, webp, jfif.',
             'thumbnail.max' => 'Dung lượng ảnh không được quá 10MB.',
         ]);
 
-        $data = $request->all();
-        $data['slug'] = Str::slug($request->title) . '-' . time();
+        // 2. Lấy toàn bộ dữ liệu từ Form (QUAN TRỌNG NHẤT)
+        $data = $request->all(); 
 
-        // SỬA: Đã import ở trên nên bỏ dấu \ ở trước
-        $data['author_id'] = Auth::id();
-        $data['status'] = 0;
+        // // 3. Bổ sung các dữ liệu hệ thống tự sinh ra
+        $data['slug'] = Str::slug($request->title) . '-' . time(); // Tạo slug
+        $data['author_id'] = Auth::id(); // Lấy ID người đăng
+        $data['status'] = 1; // Đặt trạng thái là Đã đăng
+        $data['published_at'] = now(); // Thời gian đăng
 
+        // 4. Xử lý ảnh đại diện
         if ($request->hasFile('thumbnail')) {
             $file = $request->file('thumbnail');
             $filename = time() . '.' . $file->getClientOriginalExtension();
@@ -49,32 +55,10 @@ class NewsController extends Controller
             $data['thumbnail'] = 'uploads/news/' . $filename;
         }
 
+        // 5. Lưu vào database
         News::create($data);
 
-        return redirect()->route('news.index')->with('success', 'Bài viết đã được gửi và đang chờ phê duyệt.');
-    }
-
-    // 4. PHÊ DUYỆT
-    public function approve($id)
-    {
-
-        $news = News::findOrFail($id);
-        $news->status = 1;
-        $news->published_at = now();
-        $news->save();
-
-        return redirect()->back()->with('success', 'Đã phê duyệt bài viết!');
-    }
-
-    // 5. TỪ CHỐI
-    public function reject($id)
-    {
-
-        $news = News::findOrFail($id);
-        $news->status = 2;
-        $news->save();
-
-        return redirect()->back()->with('warning', 'Đã từ chối bài viết.');
+        return redirect()->route('news.index')->with('success', 'Bài viết đã được đăng thành công.');
     }
 
     // 6. Trang chủ tin tức (Public)
@@ -158,9 +142,7 @@ class NewsController extends Controller
         // Cập nhật slug theo tiêu đề mới
         $data['slug'] = Str::slug($request->title) . '-' . time();
 
-        // Nếu sửa bài thì reset trạng thái về "Chờ duyệt" (Tuỳ logic công ty bạn)
-        // Nếu muốn giữ nguyên trạng thái cũ thì xóa dòng dưới đi
-        $data['status'] = 0; 
+        $data['status'] = 1; 
 
         // Xử lý ảnh đại diện
         if ($request->hasFile('thumbnail')) {

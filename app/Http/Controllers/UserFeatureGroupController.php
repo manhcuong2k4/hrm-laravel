@@ -19,54 +19,45 @@ class UserFeatureGroupController extends Controller
     }
 
     // Hàm Ajax xử lý việc đổ dữ liệu vào 2 ô select box
-  public function getData(Request $request)
-{
-    $groupId = $request->group_id;
-    $phongBanId = $request->phong_ban_id;
+    public function getData(Request $request)
+    {
+        $groupId = $request->group_id;
+        $phongBanId = $request->phong_ban_id;
 
-    // --- XỬ LÝ DANH SÁCH USER TRONG NHÓM (CỘT PHẢI) ---
-    if ($groupId) {
-        // Nếu có chọn nhóm thì lấy user trong nhóm đó
-        $usersInGroup = User::whereHas('featureGroups', function($q) use ($groupId) {
-            $q->where('feature_groups.id', $groupId);
-        })->get(['id', 'name', 'email']);
-    } else {
-        // Nếu chưa chọn nhóm thì cột phải để rỗng
-        $usersInGroup = [];
+        // --- XỬ LÝ DANH SÁCH USER TRONG NHÓM (CỘT PHẢI) ---
+        if ($groupId) {
+            // Nếu có chọn nhóm thì lấy user trong nhóm đó
+            $usersInGroup = User::whereHas('featureGroups', function ($q) use ($groupId) {
+                $q->where('feature_groups.id', $groupId);
+            })->get(['id', 'name', 'email']);
+        } else {
+            // Nếu chưa chọn nhóm thì cột phải để rỗng
+            $usersInGroup = [];
+        }
+
+        // --- XỬ LÝ DANH SÁCH USER CÓ SẴN (CỘT TRÁI) ---
+        if ($groupId) {
+            // Nếu ĐÃ chọn nhóm -> Lấy user CHƯA thuộc nhóm đó
+            $query = User::whereDoesntHave('featureGroups', function ($q) use ($groupId) {
+                $q->where('feature_groups.id', $groupId);
+            });
+        } else {
+            // Nếu CHƯA chọn nhóm -> Lấy TẤT CẢ user (để hiện ngay từ đầu)
+            $query = User::query();
+        }
+
+        // --- LỌC THEO PHÒNG BAN (Giữ nguyên logic sửa lỗi trước đó của bạn) ---
+        if ($phongBanId) {
+            $query->where('phongban_id', $phongBanId);
+        }
+
+        $usersAvailable = $query->get(['id', 'name', 'email']);
+
+        return response()->json([
+            'in_group' => $usersInGroup,
+            'available' => $usersAvailable
+        ]);
     }
-
-    // --- XỬ LÝ DANH SÁCH USER CÓ SẴN (CỘT TRÁI) ---
-    if ($groupId) {
-        // Nếu ĐÃ chọn nhóm -> Lấy user CHƯA thuộc nhóm đó
-        $query = User::whereDoesntHave('featureGroups', function($q) use ($groupId) {
-            $q->where('feature_groups.id', $groupId);
-        });
-    } else {
-        // Nếu CHƯA chọn nhóm -> Lấy TẤT CẢ user (để hiện ngay từ đầu)
-        $query = User::query();
-    }
-
-    // --- LỌC THEO PHÒNG BAN (Giữ nguyên logic sửa lỗi trước đó của bạn) ---
-    if ($phongBanId) {
-        // CÁCH 1: Nếu cột phòng ban nằm bảng 'users' (Kiểm tra kỹ chính tả)
-        // $query->where('phongban_id', $phongBanId); // Thử bỏ dấu gạch dưới xem?
-        
-        // CÁCH 2 (CHUẨN NHẤT): Lọc qua bảng 'nhan_sus' (Nếu user liên kết với nhân sự)
-        // Bạn hãy dùng cách này nếu cách 1 không chạy
-        $query->whereHas('nhanSu', function($q) use ($phongBanId) {
-             // Kiểm tra trong bảng nhan_sus, cột đó tên là 'phong_ban_id' hay 'phongban_id'
-             // Mở HeidiSQL ra xem chính xác tên cột nhé!
-             $q->where('phongban_id', $phongBanId); 
-        });
-    }
-    
-    $usersAvailable = $query->get(['id', 'name', 'email']);
-
-    return response()->json([
-        'in_group' => $usersInGroup,
-        'available' => $usersAvailable
-    ]);
-}
 
     public function update(Request $request)
     {

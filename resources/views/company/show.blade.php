@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link href="{{ asset('css/info/info.css') }}" rel="stylesheet">
     <link href="{{ asset('css/trangchu/trangchu.css') }}" rel="stylesheet">
-    
+
 </head>
 
 <body>
@@ -19,39 +19,33 @@
     <header class="header" id="header">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center">
-                {{-- LOGO SECTION --}}
-                <a href="{{ route('home') }}" class="logo">
-                    @if (setting('company.logo'))
-                        {{-- Ưu tiên hiển thị Logo từ cấu hình --}}
-                        <img src="{{ url('/uploads/logos/' . setting('company.logo')) }}" alt="Logo">
-                    @else
-                        {{-- Nếu không có logo thì hiện tên text (hoặc ảnh mặc định) --}}
-                        <span class="fw-bold text-primary" style="font-size: 1.5rem;">DataTech</span>
-                    @endif
+                {{-- <a href="/" class="logo">DataTech</a> --}}
+                <a href="/" class="logo">
+                    {{-- Thay 'images/logo.png' bằng đường dẫn thực tế của bạn trong thư mục public --}}
+                    <img src="{{ asset('images/Datatech.png') }}" alt="DataTech Logo">
                 </a>
-
-                {{-- NAVIGATION SECTION --}}
                 <nav class="d-none d-lg-flex align-items-center gap-4">
-                    <a href="{{ route('home') }}" class="nav-link">Trang chủ</a>
+                    <a href="/" class="nav-link">Trang chủ</a>
                     <a href="{{ route('news.public') }}" class="nav-link">Tin Tức</a>
+                    <a href="{{ route('company.show') }}" class="nav-link">Thông tin</a>
 
-                    {{-- Mục Giới thiệu đang Active --}}
-                    <a href="#" class="nav-link" style="color: var(--primary-color);">Thông tin</a>
-
-                    {{-- AUTH BUTTONS --}}
                     @if (Auth::check())
-                        <a href="{{ route('dashboard') }}" class="btn-login">
-                            <i class="bi bi-speedometer2"></i> Dashboard
-                        </a>
+                        {{-- Gọi button Dashboard --}}
+                        @include('trangchu.button', [
+                            'href' => route('dashboard'),
+                            'class' => 'btn-login',
+                            'content' => '<i class="bi bi-speedometer2"></i> Dashboard',
+                        ])
                     @else
-                        <a href="{{ route('login') }}" class="btn-login">
-                            <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
-                        </a>
+                        {{-- Gọi button Đăng nhập --}}
+                        @include('trangchu.button', [
+                            'href' => route('login'),
+                            'class' => 'btn-login',
+                            'content' => 'Đăng nhập',
+                        ])
                     @endif
                 </nav>
-
-                {{-- MOBILE TOGGLE BUTTON --}}
-                <button class="btn btn-link d-lg-none text-dark">
+                <button class="btn btn-link d-lg-none text-dark" onclick="toggleMobileMenu()">
                     <i class="bi bi-list" style="font-size: 1.5rem;"></i>
                 </button>
             </div>
@@ -215,16 +209,18 @@
     </div>
 
     <!-- Footer -->
-  @include('trangchu.footer')
+    @include('trangchu.footer')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
+    <script src="{{ asset('js/news/index.js') }}"></script>
+
+    {{-- <script>
         // Kích hoạt Tooltip của Bootstrap
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
-    </script>
+    </script> --}}
 </body>
 
 </html>
